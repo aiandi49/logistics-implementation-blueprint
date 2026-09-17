@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI &amp; I Logistics — A Free Operations Toolkit for Any Company</title>
+<meta name="theme-color" content="#F2F9F9"/>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --cream:     #F2F9F9;
+  --warm:      #E4F1F1;
+  --stone:     #9FC8CB;
+  --ink:       #10282A;
+  --ink-mid:   #3E5C5E;
+  --ink-mute:  #6E9294;
+  --gold:      #0FA3A8;
+  --gold-lt:   #4ECDC4;
+  --gold-bg:   rgba(15,163,168,0.09);
+  --gold-bdr:  rgba(15,163,168,0.28);
+  --white:     #FFFFFF;
+  --border:    rgba(20,80,90,0.12);
+  --border-md: rgba(20,80,90,0.22);
+  --shadow-sm: 0 2px 8px rgba(10,60,70,0.07);
+  --shadow-md: 0 8px 32px rgba(10,60,70,0.11);
+  --shadow-lg: 0 20px 60px rgba(10,60,70,0.14);
+  --r: 10px;
+  --green:     #2D9C7F;
+  --green-bg:  #E4F7F1;
+  --cyan:      #1868A8;
+  --cyan-bg:   rgba(24,104,168,0.08);
+  --magenta:   #2E86AB;
+  --magenta-bg:rgba(46,134,171,0.08);
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; overflow-x:hidden; }
+body {
+  background:var(--cream); color:var(--ink); font-family:'DM Sans',sans-serif;
+  font-weight:400; line-height:1.65;
+}
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(15,163,168,0.08) 0%, transparent 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+}
+.page { position:relative; z-index:1; max-width:1180px; margin:0 auto; padding:0 32px 100px; }
+
+/* CONTROLS */
+.controls-bar { position:fixed; top:20px; right:20px; z-index:50; display:flex; align-items:center; gap:6px; background:var(--white); border:1px solid var(--border-md); border-radius:100px; padding:5px; box-shadow:var(--shadow-md); }
+.fs-btn { width:32px; height:32px; border-radius:50%; border:none; background:transparent; color:var(--ink-mid); font-family:'DM Mono',monospace; font-size:0.72rem; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.15s,color 0.15s; }
+.fs-btn:hover { background:var(--gold-bg); color:var(--gold); }
+#fsReset { font-size:0.8rem; }
+.theme-toggle { width:32px; height:32px; border-radius:50%; background:var(--white); border:1px solid var(--border-md); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.95rem; transition:transform 0.2s; }
+.theme-toggle:hover { transform:scale(1.06); }
+
+/* HERO */
+.hero { padding:64px 0 0; border-bottom:1px solid var(--border-md); margin-bottom:56px; animation:fadeDown 0.8s ease both; }
+.hero-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.28em; text-transform:uppercase; color:var(--gold); margin-bottom:18px; }
+.hero-name { font-family:'Cormorant Garamond',serif; font-size:clamp(2.4rem,5.6vw,4.2rem); font-weight:600; line-height:1.04; color:var(--ink); letter-spacing:-0.01em; margin-bottom:20px; max-width:16ch; }
+.hero-name .accent { color:var(--gold); font-style:italic; }
+.hero-tagline { font-size:1.02rem; color:var(--ink-mute); font-weight:300; max-width:52ch; font-style:italic; margin-bottom:30px; }
+.hero-ctas { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:36px; }
+.btn { display:inline-flex; align-items:center; gap:8px; padding:13px 24px; font-family:'DM Sans',sans-serif; font-size:0.9rem; font-weight:600; border-radius:100px; text-decoration:none; cursor:pointer; border:1px solid transparent; transition:transform 0.15s; }
+.btn:hover { transform:translateY(-1px); }
+.btn-primary { background:var(--gold); color:var(--white); box-shadow:var(--shadow-sm); }
+.btn-ghost { background:var(--white); color:var(--ink); border-color:var(--border-md); }
+.hero-facts { display:flex; gap:32px; flex-wrap:wrap; padding-bottom:44px; }
+.hero-fact b { display:block; font-family:'Cormorant Garamond',serif; font-size:1.7rem; font-weight:600; color:var(--gold); }
+.hero-fact span { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--ink-mute); letter-spacing:0.06em; }
+
+/* DASHBOARD MOCKUP */
+.dash-wrap { margin:0 0 64px; }
+.dash-label { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); font-weight:500; margin-bottom:16px; display:flex; align-items:center; gap:14px; }
+.dash-label::after { content:''; flex:1; height:1px; background:var(--border-md); }
+.dash-frame { background:#0A1F22; border-radius:14px; box-shadow:var(--shadow-lg); overflow:hidden; border:1px solid rgba(15,163,168,0.25); }
+.dash-titlebar { display:flex; align-items:center; gap:8px; padding:11px 16px; background:#0D272B; border-bottom:1px solid rgba(255,255,255,0.06); }
+.dash-dot { width:9px; height:9px; border-radius:50%; }
+.dash-titlebar .fname { font-family:'DM Mono',monospace; font-size:0.68rem; color:rgba(234,246,246,0.55); margin-left:6px; }
+.dash-body { display:grid; grid-template-columns:64px 1fr; min-height:400px; }
+.dash-nav { background:#08191C; border-right:1px solid rgba(255,255,255,0.06); display:flex; flex-direction:column; align-items:center; padding:18px 0; gap:22px; }
+.dash-nav .navicon { width:20px; height:20px; opacity:0.4; }
+.dash-nav .navicon.active { opacity:1; }
+.dash-main { padding:20px 22px 22px; display:flex; flex-direction:column; gap:16px; }
+.dash-topline { display:flex; justify-content:space-between; align-items:center; }
+.dash-brand { font-family:'Cormorant Garamond',serif; font-weight:600; font-size:1.15rem; color:#EAF6F6; display:flex; align-items:center; gap:8px; }
+.dash-brand .dot { width:8px; height:8px; border-radius:50%; background:#0FA3A8; box-shadow:0 0 0 4px rgba(15,163,168,0.2); }
+.dash-liveflag { font-family:'DM Mono',monospace; font-size:0.6rem; color:#4ECDC4; display:flex; align-items:center; gap:6px; }
+.dash-liveflag .pulse { width:6px; height:6px; background:#4ECDC4; border-radius:50%; animation:pulse 1.8s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.25;} }
+.dash-kpirow { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+.dash-kpi { background:#0D272B; border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:12px 14px; }
+.dash-kpi-label { font-family:'DM Mono',monospace; font-size:0.58rem; color:rgba(234,246,246,0.45); letter-spacing:0.04em; margin-bottom:6px; }
+.dash-kpi-val { font-family:'Cormorant Garamond',serif; font-size:1.35rem; color:#EAF6F6; display:flex; align-items:baseline; gap:6px; }
+.dash-kpi-val .delta { font-family:'DM Mono',monospace; font-size:0.62rem; color:#4ECDC4; }
+.dash-kpi-spark { margin-top:6px; }
+.dash-panels { display:grid; grid-template-columns:1.4fr 1fr; gap:14px; flex:1; }
+.dash-panel { background:#0D272B; border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:14px 16px; display:flex; flex-direction:column; }
+.dash-panel-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.dash-panel-title { font-family:'DM Mono',monospace; font-size:0.62rem; color:rgba(234,246,246,0.55); letter-spacing:0.05em; }
+.dash-table { display:flex; flex-direction:column; gap:7px; margin-top:4px; }
+.dash-table-row { display:flex; justify-content:space-between; align-items:center; font-family:'DM Mono',monospace; font-size:0.66rem; color:rgba(234,246,246,0.7); padding:6px 8px; background:rgba(255,255,255,0.03); border-radius:5px; }
+.dash-table-row .status { padding:1px 7px; border-radius:100px; font-size:0.58rem; }
+.status-ontime { background:rgba(78,205,196,0.16); color:#4ECDC4; }
+.status-watch { background:rgba(255,182,39,0.16); color:#FFB627; }
+
+/* MISSION */
+.mission-card { background:var(--white); border:1px solid var(--border-md); border-radius:var(--r); padding:32px; margin-bottom:16px; box-shadow:var(--shadow-sm); }
+.mission-card h2 { font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:600; color:var(--ink); margin-bottom:22px; max-width:36ch; }
+.mission-list { display:flex; flex-direction:column; gap:20px; }
+.mission-item { display:flex; gap:16px; }
+.mission-item .mark { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--gold); background:var(--gold-bg); border:1px solid var(--gold-bdr); border-radius:50%; width:28px; height:28px; min-width:28px; display:flex; align-items:center; justify-content:center; margin-top:2px; }
+.mission-item h4 { font-size:0.98rem; font-weight:600; margin-bottom:5px; color:var(--ink); }
+.mission-item p { font-size:0.87rem; color:var(--ink-mid); line-height:1.65; }
+
+/* SECTION LABEL */
+.section-label { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); font-weight:500; margin:56px 0 20px; display:flex; align-items:center; gap:14px; }
+.section-label::after { content:''; flex:1; height:1px; background:var(--border-md); }
+
+/* TOOLKIT GRID */
+.toolkit-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+.toolkit-card { background:var(--white); border:1px solid var(--border); border-radius:var(--r); padding:24px; box-shadow:var(--shadow-sm); transition:box-shadow 0.2s, transform 0.2s; }
+.toolkit-card:hover { box-shadow:var(--shadow-md); transform:translateY(-2px); }
+.toolkit-card .idx { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--gold); letter-spacing:0.08em; margin-bottom:14px; }
+.toolkit-card h3 { font-family:'Cormorant Garamond',serif; font-size:1.25rem; font-weight:600; margin-bottom:10px; color:var(--ink); }
+.toolkit-card p { font-size:0.85rem; color:var(--ink-mid); line-height:1.65; margin-bottom:16px; }
+.toolkit-card a { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--gold); text-decoration:none; border-bottom:1px solid var(--gold-bdr); padding-bottom:2px; }
+
+/* STEPS */
+.how-card { background:var(--white); border:1px solid var(--border-md); border-radius:var(--r); padding:28px 32px; box-shadow:var(--shadow-sm); }
+.how-card h3 { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:600; color:var(--ink); margin-bottom:16px; }
+.how-list { list-style:none; display:flex; flex-direction:column; gap:12px; counter-reset:how; }
+.how-list li { display:flex; align-items:flex-start; gap:14px; font-size:0.88rem; color:var(--ink-mid); line-height:1.65; counter-increment:how; }
+.how-list li::before { content:counter(how); background:var(--gold-bg); border:1px solid var(--gold-bdr); color:var(--gold); border-radius:50%; width:24px; height:24px; min-width:24px; display:flex; align-items:center; justify-content:center; font-family:'DM Mono',monospace; font-size:0.68rem; font-weight:600; margin-top:1px; }
+
+/* DISCLAIMER */
+.disclaimer-big { background:var(--white); border:2px solid var(--gold-bdr); border-radius:var(--r); padding:22px 26px; box-shadow:var(--shadow-sm); }
+.disclaimer-big-title { font-family:'DM Mono',monospace; font-size:0.64rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:10px; font-weight:600; }
+.disclaimer-big p { font-size:0.87rem; color:var(--ink-mid); line-height:1.7; }
+.disclaimer-big strong { color:var(--ink); }
+
+/* CONTACT */
+.contact-card { background:var(--white); border:1px solid var(--border-md); border-radius:var(--r); padding:32px; box-shadow:var(--shadow-sm); display:grid; grid-template-columns:1fr 1fr; gap:28px; align-items:center; }
+.contact-name { font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:600; color:var(--ink); margin-bottom:4px; }
+.contact-role { font-family:'DM Mono',monospace; font-size:0.66rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; }
+.contact-blurb { font-size:0.86rem; color:var(--ink-mid); line-height:1.75; }
+.contact-links { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.contact-link { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:20px 16px; background:var(--cream); border:1px solid var(--border); border-radius:9px; text-decoration:none; color:var(--ink); font-size:0.88rem; font-weight:600; text-align:center; transition:all 0.15s; }
+.contact-link:hover { border-color:var(--gold-bdr); background:var(--gold-bg); color:var(--gold); transform:translateY(-2px); }
+.contact-link .tag { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); letter-spacing:0.08em; }
+
+/* FOOTER */
+.site-footer { position:relative; z-index:1; max-width:1180px; margin:0 auto; padding:32px; border-top:1px solid var(--border-md); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+.footer-name { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:600; color:var(--ink); }
+.footer-copy { font-family:'DM Mono',monospace; font-size:0.64rem; color:var(--stone); letter-spacing:0.1em; }
+
+@keyframes fadeDown { from{opacity:0;transform:translateY(-16px);}to{opacity:1;transform:none;} }
+
+/* DARK MODE */
+body.dark {
+  --cream: #0B1E22;
+  --warm:  #10282C;
+  --stone: #4E7A7E;
+  --ink:   #EAF6F6;
+  --ink-mid: #B9DADB;
+  --ink-mute: #7FA9AC;
+  --white: #0F2529;
+  --border: rgba(234,246,246,0.09);
+  --border-md: rgba(234,246,246,0.18);
+  --green-bg: rgba(45,156,127,0.16);
+  --magenta-bg: rgba(46,134,171,0.16);
+  --cyan-bg: rgba(24,104,168,0.18);
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .page { padding: 0 24px 80px; }
+  .toolkit-grid { grid-template-columns: 1fr 1fr; }
+  .contact-card { grid-template-columns: 1fr; }
+  .dash-body { grid-template-columns: 52px 1fr; }
+  .dash-panels { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .page { padding: 0 16px 100px; }
+  .controls-bar { top: 12px; right: 12px; padding: 4px; }
+  .fs-btn { width: 28px; height: 28px; font-size: 0.66rem; }
+  .theme-toggle { width: 28px; height: 28px; font-size: 0.85rem; }
+  .hero { padding: 44px 0 0; text-align: center; }
+  .hero-name { max-width: none; margin-left:auto; margin-right:auto; }
+  .hero-tagline { margin: 0 auto 28px; }
+  .hero-ctas { justify-content: center; }
+  .hero-facts { justify-content: center; gap: 24px; }
+  .dash-body { grid-template-columns: 1fr; }
+  .dash-nav { flex-direction: row; justify-content: center; padding: 10px 0; gap: 20px; }
+  .dash-kpirow { grid-template-columns: 1fr 1fr; }
+  .section-label { margin: 40px 0 14px; font-size: 0.6rem; justify-content: center; }
+  .section-label::after { display: none; }
+  .toolkit-grid { grid-template-columns: 1fr; }
+  .toolkit-card { text-align: center; }
+  .how-card { padding: 22px; }
+  .how-card h3 { text-align: center; }
+  .mission-card { padding: 24px; text-align: center; }
+  .mission-item { text-align: left; }
+  .contact-card { padding: 22px; }
+  .contact-name, .contact-role, .contact-blurb { text-align: center; }
+  .contact-links { grid-template-columns: 1fr; }
+  .site-footer { flex-direction: column; text-align: center; padding: 24px 16px; }
+}
+@media (max-width: 380px) {
+  .page { padding: 0 12px 100px; }
+}
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .page { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+}
+</style>
+</head>
+<body>
+
+<div class="controls-bar">
+  <button class="fs-btn" id="fsDown" aria-label="Decrease text size">A-</button>
+  <button class="fs-btn" id="fsReset" aria-label="Reset text size">A</button>
+  <button class="fs-btn" id="fsUp" aria-label="Increase text size">A+</button>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+</div>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">For Operations Teams of Any Size</div>
+    <h1 class="hero-name">AI &amp; I Logistics<span class="accent">.</span></h1>
+    <p class="hero-tagline">A free, complete blueprint for the dashboard, the workflows, and the numbers that actually run a logistics operation — built to be copied into your own company, under your own name, at no cost.</p>
+    <div class="hero-ctas">
+      <a href="logistics-implementation-blueprint.html" class="btn btn-primary">Get the Full Blueprint</a>
+      <a href="#toolkit" class="btn btn-ghost">See What's Inside</a>
+    </div>
+    <div class="hero-facts">
+      <div class="hero-fact"><b>$0</b><span>COST TO IMPLEMENT</span></div>
+      <div class="hero-fact"><b>5</b><span>CORE DOCUMENTS INCLUDED</span></div>
+      <div class="hero-fact"><b>1</b><span>DASHBOARD BLUEPRINT</span></div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD MOCKUP -->
+  <div class="dash-wrap">
+    <div class="dash-label">Route Optimization — Sample Dashboard</div>
+    <div class="dash-frame">
+      <div class="dash-titlebar">
+        <span class="dash-dot" style="background:#ff5f57;"></span>
+        <span class="dash-dot" style="background:#febc2e;"></span>
+        <span class="dash-dot" style="background:#28c840;"></span>
+        <span class="fname">operations.aiandilogistics.app</span>
+      </div>
+      <div class="dash-body">
+        <div class="dash-nav">
+          <svg class="navicon active" viewBox="0 0 24 24" fill="none" stroke="#4ECDC4" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          <svg class="navicon" viewBox="0 0 24 24" fill="none" stroke="#EAF6F6" stroke-width="1.6"><path d="M3 11l18-7-7 18-3-8-8-3z"/></svg>
+          <svg class="navicon" viewBox="0 0 24 24" fill="none" stroke="#EAF6F6" stroke-width="1.6"><rect x="1" y="6" width="15" height="12" rx="2"/><path d="M16 10h4l3 3v5h-7z"/><circle cx="6" cy="20" r="1.6"/><circle cx="18" cy="20" r="1.6"/></svg>
+          <svg class="navicon" viewBox="0 0 24 24" fill="none" stroke="#EAF6F6" stroke-width="1.6"><path d="M3 3v18h18"/><path d="M7 15l4-6 4 3 5-8"/></svg>
+        </div>
+        <div class="dash-main">
+          <div class="dash-topline">
+            <div class="dash-brand"><span class="dot"></span> AI &amp; I &nbsp;Operations</div>
+            <div class="dash-liveflag"><span class="pulse"></span> LIVE DATA CONCEPT</div>
+          </div>
+
+          <div class="dash-kpirow">
+            <div class="dash-kpi">
+              <div class="dash-kpi-label">ON-TIME RATE</div>
+              <div class="dash-kpi-val">96.4% <span class="delta">▲ 3.1</span></div>
+              <svg class="dash-kpi-spark" viewBox="0 0 100 24" width="100%" height="24"><polyline points="0,20 15,17 30,18 45,12 60,13 75,7 90,8 100,4" fill="none" stroke="#4ECDC4" stroke-width="2"/></svg>
+            </div>
+            <div class="dash-kpi">
+              <div class="dash-kpi-label">COST / SHIPMENT</div>
+              <div class="dash-kpi-val">$41.20 <span class="delta">▼ 6.4</span></div>
+              <svg class="dash-kpi-spark" viewBox="0 0 100 24" width="100%" height="24"><polyline points="0,6 15,10 30,9 45,15 60,14 75,19 90,18 100,20" fill="none" stroke="#4ECDC4" stroke-width="2"/></svg>
+            </div>
+            <div class="dash-kpi">
+              <div class="dash-kpi-label">FUEL EFFICIENCY</div>
+              <div class="dash-kpi-val">+11.2% <span class="delta">▲ 2.0</span></div>
+              <svg class="dash-kpi-spark" viewBox="0 0 100 24" width="100%" height="24"><polyline points="0,19 15,16 30,17 45,10 60,11 75,6 90,7 100,3" fill="none" stroke="#4ECDC4" stroke-width="2"/></svg>
+            </div>
+            <div class="dash-kpi">
+              <div class="dash-kpi-label">SHIPMENTS / DAY</div>
+              <div class="dash-kpi-val">12,406 <span class="delta">▲ 8.7</span></div>
+              <svg class="dash-kpi-spark" viewBox="0 0 100 24" width="100%" height="24"><polyline points="0,18 15,14 30,15 45,9 60,10 75,5 90,6 100,2" fill="none" stroke="#4ECDC4" stroke-width="2"/></svg>
+            </div>
+          </div>
+
+          <div class="dash-panels">
+            <div class="dash-panel">
+              <div class="dash-panel-head"><span class="dash-panel-title">ACTIVE CORRIDORS — WORLD VIEW</span></div>
+              <svg viewBox="0 0 480 220" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <rect width="480" height="220" fill="#08191C"/>
+                <g fill="#123A3E" opacity="0.9">
+                  <path d="M30 70 q20 -30 55 -30 q45 0 55 35 q10 35 -25 50 q-40 18 -70 -5 q-30 -22 -15 -50 Z"/>
+                  <path d="M120 110 q30 -15 55 5 q20 18 5 38 q-18 22 -50 12 q-28 -9 -10 -55 Z"/>
+                  <path d="M210 55 q40 -25 85 -8 q35 14 25 45 q-12 38 -60 35 q-45 -3 -50 -72 Z"/>
+                  <path d="M340 90 q35 -20 70 5 q22 18 5 42 q-20 26 -55 15 q-32 -10 -20 -62 Z"/>
+                  <path d="M60 150 q25 -12 45 6 q15 15 0 28 q-18 15 -40 5 q-20 -10 -5 -39 Z"/>
+                  <path d="M250 145 q30 -10 50 8 q15 14 -2 26 q-20 14 -42 2 q-20 -11 -6 -36 Z"/>
+                </g>
+                <g stroke="#0FA3A8" stroke-width="1.8" fill="none" opacity="0.9">
+                  <path d="M78 88 Q 180 30, 255 68" stroke-dasharray="4 5"/>
+                  <path d="M255 68 Q 320 95, 372 108" stroke-dasharray="4 5"/>
+                  <path d="M78 88 Q 100 150, 82 160" stroke-dasharray="4 5"/>
+                  <path d="M255 68 Q 260 130, 272 152" stroke-dasharray="4 5"/>
+                </g>
+                <g>
+                  <circle cx="78" cy="88" r="4.5" fill="#FFB627"/>
+                  <circle cx="255" cy="68" r="4.5" fill="#FFB627"/>
+                  <circle cx="372" cy="108" r="3.5" fill="#4ECDC4"/>
+                  <circle cx="82" cy="160" r="3.5" fill="#4ECDC4"/>
+                  <circle cx="272" cy="152" r="3.5" fill="#4ECDC4"/>
+                </g>
+                <g font-family="DM Mono, monospace" font-size="8.5" fill="#B9DADB">
+                  <text x="60" y="78">CHI</text>
+                  <text x="238" y="58">RTM</text>
+                  <text x="352" y="120">SIN</text>
+                  <text x="62" y="175">LGB</text>
+                  <text x="252" y="166">DAL</text>
+                </g>
+              </svg>
+            </div>
+            <div class="dash-panel">
+              <div class="dash-panel-head"><span class="dash-panel-title">TODAY'S SHIPMENTS</span></div>
+              <div class="dash-table">
+                <div class="dash-table-row"><span>CHI &rarr; RTM</span><span class="status status-ontime">On Time</span></div>
+                <div class="dash-table-row"><span>RTM &rarr; SIN</span><span class="status status-ontime">On Time</span></div>
+                <div class="dash-table-row"><span>CHI &rarr; LGB</span><span class="status status-watch">Watch</span></div>
+                <div class="dash-table-row"><span>DAL &rarr; RTM</span><span class="status status-ontime">On Time</span></div>
+                <div class="dash-table-row"><span>SIN &rarr; DAL</span><span class="status status-watch">Watch</span></div>
+                <div class="dash-table-row"><span>LGB &rarr; CHI</span><span class="status status-ontime">On Time</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer-big">
+    <div class="disclaimer-big-title">This Is an Educational Toolkit, Not a Software Vendor</div>
+    <p><strong>Everything here — the dashboard concept, the blueprint, the templates — is free to take, rename, and build into your own operation.</strong> Nothing is sold, licensed, or tracked back to us. Build it yourself, hire a developer to build it, or hand it to your existing IT team — it's yours either way.</p>
+  </div>
+
+  <!-- MISSION -->
+  <div class="section-label">Why This Exists</div>
+  <div class="mission-card">
+    <h2>The idea is simple: the structure should be free, even if the software isn't yet.</h2>
+    <div class="mission-list">
+      <div class="mission-item">
+        <div class="mark">1</div>
+        <div>
+          <h4>Most small and mid-size companies can't justify the enterprise logistics platforms</h4>
+          <p>The tools that route optimization, delay prediction, and cost tracking depend on are usually priced for companies already doing hundreds of millions in freight — not the business trying to get its first regional distribution loop under control.</p>
+        </div>
+      </div>
+      <div class="mission-item">
+        <div class="mark">2</div>
+        <div>
+          <h4>The underlying structure isn't actually proprietary</h4>
+          <p>Route optimization, on-time tracking, and cost-per-shipment reporting are well-understood concepts. What's usually sold is packaging, not invention — so the packaging is what we're giving away.</p>
+        </div>
+      </div>
+      <div class="mission-item">
+        <div class="mark">3</div>
+        <div>
+          <h4>You keep the name, the data, and the decisions</h4>
+          <p>This isn't a platform you sign up for. It's a blueprint — the dashboard layout, the KPI definitions, the governance structure — for your own team or developer to build and operate entirely inside your own company.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOLKIT -->
+  <div class="section-label" id="toolkit">What's Inside</div>
+  <div class="toolkit-grid">
+    <div class="toolkit-card">
+      <div class="idx">01 · DASHBOARD</div>
+      <h3>The Operations Dashboard Concept</h3>
+      <p>Exact layout and metric definitions for a route-optimization and delivery-performance dashboard — on-time rate, cost per shipment, fuel efficiency, delay prediction — ready to hand to a developer.</p>
+      <a href="logistics-implementation-blueprint.html#dashboard">View the spec ↗</a>
+    </div>
+    <div class="toolkit-card">
+      <div class="idx">02 · BUSINESS PLAN</div>
+      <h3>The Business Plan Outline</h3>
+      <p>A working structure for justifying and scoping an in-house logistics function — problem statement, cost baseline, expected savings, and a phased rollout budget.</p>
+      <a href="logistics-implementation-blueprint.html#business-plan">View the outline ↗</a>
+    </div>
+    <div class="toolkit-card">
+      <div class="idx">03 · GOVERNANCE</div>
+      <h3>The Operations Governance Charter</h3>
+      <p>A lightweight bylaws-style document defining who owns which decisions — routing changes, carrier selection, exception handling — so the system doesn't stall waiting on one person.</p>
+      <a href="logistics-implementation-blueprint.html#governance">View the charter ↗</a>
+    </div>
+    <div class="toolkit-card">
+      <div class="idx">04 · ROADMAP</div>
+      <h3>The Implementation Roadmap</h3>
+      <p>A four-phase rollout plan — data audit, pilot corridor, dashboard deployment, company-wide rollout — with realistic timelines for a small operations team.</p>
+      <a href="logistics-implementation-blueprint.html#roadmap">View the roadmap ↗</a>
+    </div>
+    <div class="toolkit-card">
+      <div class="idx">05 · KPI FRAMEWORK</div>
+      <h3>The KPI Definitions Reference</h3>
+      <p>Precise, no-ambiguity definitions for the metrics that actually matter — on-time delivery rate, delay variance, cost per shipment, margin impact — so every team measures the same thing the same way.</p>
+      <a href="logistics-implementation-blueprint.html#kpi">View the definitions ↗</a>
+    </div>
+    <div class="toolkit-card">
+      <div class="idx">06 · GET STARTED</div>
+      <h3>Talk Through Your Own Setup</h3>
+      <p>If you want a second set of eyes on how this maps to your specific operation — freight, delivery, field service, or anything that moves — reach out below.</p>
+      <a href="#contact">Get in touch ↗</a>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="section-label">How to Actually Use This</div>
+  <div class="how-card">
+    <h3>Four steps, roughly in order</h3>
+    <ul class="how-list">
+      <li>Read the business plan outline and use it to build the case internally — what it costs today, what a working system could save, and what a realistic first phase looks like.</li>
+      <li>Hand the dashboard spec to a developer — the metric definitions and layout are specific enough that an in-house developer or freelance contractor can build a working first version without guessing.</li>
+      <li>Adopt the governance charter — decide who owns routing decisions, exception handling, and carrier changes before the system is live, not after the first disagreement.</li>
+      <li>Roll out in one corridor first, following the phased roadmap, then expand once the numbers are trusted internally.</li>
+    </ul>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="section-label" id="contact">Want Help Mapping Your Own Setup</div>
+  <div class="contact-card">
+    <div>
+      <div class="contact-name">Lamar Myers</div>
+      <div class="contact-role">Founder &amp; CEO, VTREI, LLC</div>
+      <p class="contact-blurb">AI &amp; blockchain entrepreneur based in Tucson, Arizona, building the MetaEarth ecosystem. If you want a second set of eyes on how this blueprint maps to your specific operation, reach out below.</p>
+    </div>
+    <div class="contact-links">
+      <a class="contact-link" href="mailto:ai.agent.lamar@gmail.com?subject=Inquiry%20from%20AI%20%26%20I%20Logistics" target="_blank" rel="noopener">Send an Email <span class="tag">MAIL</span></a>
+      <a class="contact-link" href="https://linkedin.com/in/lamar-myers-ai" target="_blank" rel="noopener">Connect on LinkedIn <span class="tag">LINKEDIN</span></a>
+    </div>
+  </div>
+
+</div>
+
+<footer class="site-footer">
+  <div class="footer-name">AI &amp; I Logistics</div>
+  <div class="footer-copy">A FREE TOOLKIT · NOT A SOFTWARE VENDOR · NOTHING HERE IS SOLD</div>
+</footer>
+
+<script>
+(function() {
+  var toggle = document.getElementById('themeToggle');
+  var body = document.body;
+  function applyTheme(isDark) {
+    body.classList.toggle('dark', isDark);
+    toggle.textContent = isDark ? '☀️' : '🌙';
+    try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch(e) {}
+  }
+  var saved = null;
+  try { saved = localStorage.getItem('theme'); } catch(e) {}
+  applyTheme(saved === 'dark'); // defaults to light unless the visitor already chose dark
+  toggle.addEventListener('click', function() {
+    applyTheme(!body.classList.contains('dark'));
+  });
+
+  var sizes = [0.9, 1, 1.1, 1.22];
+  var idx = 1;
+  try {
+    var savedIdx = parseInt(localStorage.getItem('fsIdx'), 10);
+    if (!isNaN(savedIdx) && savedIdx >= 0 && savedIdx < sizes.length) idx = savedIdx;
+  } catch(e) {}
+  function applyScale() {
+    document.documentElement.style.fontSize = (sizes[idx] * 100) + '%';
+    try { localStorage.setItem('fsIdx', idx); } catch(e) {}
+  }
+  applyScale();
+  document.getElementById('fsUp').addEventListener('click', function() {
+    idx = Math.min(idx + 1, sizes.length - 1);
+    applyScale();
+  });
+  document.getElementById('fsDown').addEventListener('click', function() {
+    idx = Math.max(idx - 1, 0);
+    applyScale();
+  });
+  document.getElementById('fsReset').addEventListener('click', function() {
+    idx = 1;
+    applyScale();
+  });
+})();
+</script>
+
+</body>
+</html>
